@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - MakanEnak</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h2><i class="bi bi-heart-fill text-primary"></i> MakanEnak</h2>
+                <p class="text-muted">Bergabung dengan komunitas berbagi</p>
+            </div>
+            
+            <!-- Role Selection -->
+            <div id="roleSelection" class="mb-4">
+                <h5 class="text-center mb-3">Pilih Peran Anda</h5>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="userRole" id="donorRole" value="donor">
+                        <label class="btn btn-outline-primary w-100" for="donorRole">
+                            <i class="bi bi-gift d-block mb-1"></i>
+                            <small>Donor</small>
+                        </label>
+                    </div>
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="userRole" id="recipientRole" value="recipient">
+                        <label class="btn btn-outline-success w-100" for="recipientRole">
+                            <i class="bi bi-hand-thumbs-up d-block mb-1"></i>
+                            <small>Penerima</small>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="registerForm">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label">Nama Depan</label>
+                        <input type="text" class="form-control" id="firstName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label">Nama Belakang</label>
+                        <input type="text" class="form-control" id="lastName" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Nomor Telepon</label>
+                    <input type="tel" class="form-control" id="phone" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="address" class="form-label">Alamat</label>
+                    <textarea class="form-control" id="address" rows="2" required></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" required minlength="6">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-text">Minimal 6 karakter</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Konfirmasi Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" required>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                    <label class="form-check-label" for="agreeTerms">
+                        Saya setuju dengan <a href="../legal/terms.html" target="_blank">Syarat & Ketentuan</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 mb-3">
+                    <span class="register-text">Daftar</span>
+                    <span class="register-spinner d-none">
+                        <span class="loading"></span> Memproses...
+                    </span>
+                </button>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="mb-2">Sudah punya akun?</p>
+                    <a href="login.html" class="btn btn-outline-primary w-100">Masuk</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Donor - MakanEnak</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-primary" href="../../index.html">
+                <i class="bi bi-heart-fill"></i> MakanEnak
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> <span id="userEmail">User</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="bi bi-person"></i> Profile
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="nav flex-column nav-pills">
+                    <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="#donations" data-section="donations">
+                        <i class="bi bi-gift"></i> Donasi Saya
+                    </a>
+                    <a class="nav-link" href="#add-donation" data-section="add-donation">
+                        <i class="bi bi-plus-circle"></i> Tambah Donasi
+                    </a>
+                    <a class="nav-link" href="#requests" data-section="requests">
+                        <i class="bi bi-inbox"></i> Permintaan
+                    </a>
+                    <a class="nav-link" href="#map-view" data-section="map-view">
+                        <i class="bi bi-geo-alt"></i> Peta
+                    </a>
+                    <a class="nav-link" href="#history" data-section="history">
+                        <i class="bi bi-clock-history"></i> Riwayat
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-auto">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="content-section">
+                    <div class="dashboard-header">
+                        <div class="container">
+                            <h2>Dashboard Donor</h2>
+                            <p class="mb-0">Selamat datang kembali! Mari berbagi kebaikan hari ini.</p>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <!-- Statistics Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card bg-gradient-primary">
+                                    <div class="stat-number" id="totalDonations">0</div>
+                                    <div>Total Donasi</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card bg-gradient-success">
+                                    <div class="stat-number" id="activeDonations">0</div>
+                                    <div>Donasi Aktif</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card bg-gradient-warning">
+                                    <div class="stat-number" id="pendingRequests">0</div>
+                                    <div>Permintaan Pending</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card bg-gradient-info">
+                                    <div class="stat-number" id="completedDonations">0</div>
+                                    <div>Donasi Selesai</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="dashboard-card">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-activity"></i> Aktivitas Terbaru</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="recentActivity">
+                                            <div class="text-center py-4">
+                                                <div class="loading"></div>
+                                                <p class="mt-2">Memuat aktivitas...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="dashboard-card">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-bell"></i> Notifikasi</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="notifications">
+                                            <div class="text-center py-4">
+                                                <div class="loading"></div>
+                                                <p class="mt-2">Memuat notifikasi...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donations Section -->
+                <div id="donations" class="content-section d-none">
+                    <div class="dashboard-header">
+                        <div class="container">
+                            <h2>Donasi Saya</h2>
+                            <p class="mb-0">Kelola semua donasi makanan Anda</p>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="dashboard-card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5><i class="bi bi-gift"></i> Daftar Donasi</h5>
+                                        <button class="btn btn-primary" onclick="showSection('add-donation')">
+                                            <i class="bi bi-plus"></i> Tambah Donasi
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="donationsList">
+                                            <div class="text-center py-4">
+                                                <div class="loading"></div>
+                                                <p class="mt-2">Memuat donasi...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Donation Section -->
+                <div id="add-donation" class="content-section d-none">
+                    <div class="dashboard-header">
+                        <div class="container">
+                            <h2>Tambah Donasi Baru</h2>
+                            <p class="mb-0">Berbagi makanan dengan sesama</p>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="form-container">
+                                    <form id="addDonationForm">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="foodName" class="form-label">Nama Makanan *</label>
+                                                <input type="text" class="form-control" id="foodName" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="quantity" class="form-label">Jumlah/Porsi *</label>
+                                                <input type="text" class="form-control" id="quantity" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Deskripsi</label>
+                                            <textarea class="form-control" id="description" rows="3"></textarea>
+                                        </div>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="expiryDate" class="form-label">Tanggal Kadaluarsa *</label>
+                                                <input type="datetime-local" class="form-control" id="expiryDate" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="category" class="form-label">Kategori *</label>
+                                                <select class="form-select" id="category" required>
+                                                    <option value="">Pilih kategori</option>
+                                                    <option value="makanan-berat">Makanan Berat</option>
+                                                    <option value="makanan-ringan">Makanan Ringan</option>
+                                                    <option value="minuman">Minuman</option>
+                                                    <option value="buah">Buah</option>
+                                                    <option value="sayuran">Sayuran</option>
+                                                    <option value="lainnya">Lainnya</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="foodImage" class="form-label">Foto Makanan</label>
+                                            <input type="file" class="form-control" id="foodImage" accept="image/*">
+                                            <div class="form-text">Format: JPG, PNG. Maksimal 5MB</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Lokasi Pengambilan *</label>
+                                            <div class="row g-2">
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" id="pickupAddress" placeholder="Alamat lengkap" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <button type="button" class="btn btn-outline-primary w-100" onclick="getCurrentLocation()">
+                                                        <i class="bi bi-geo-alt"></i> Lokasi Saya
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#mapModal">
+                                                        <i class="bi bi-map"></i> Pilih di Peta
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="pickupTimeStart" class="form-label">Waktu Ambil Mulai *</label>
+                                                <input type="time" class="form-control" id="pickupTimeStart" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="pickupTimeEnd" class="form-label">Waktu Ambil Selesai *</label>
+                                                <input type="time" class="form-control" id="pickupTimeEnd" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="contactInfo" class="form-label">Info Kontak</label>
+                                            <textarea class="form-control" id="contactInfo" rows="2" placeholder="Instruksi khusus untuk pengambilan"></textarea>
+                                        </div>
+
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-plus-circle"></i> Tambah Donasi
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections would be added here -->
+                <div id="requests" class="content-section d-none">
+                    <div class="dashboard-header">
+                        <div class="container">
+                            <h2>Permintaan Donasi</h2>
+                            <p class="mb-0">Kelola permintaan dari penerima</p>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="dashboard-card">
+                            <div class="card-body" id="requestsList">
+                                <div class="text-center py-4">
+                                    <div class="loading"></div>
+                                    <p class="mt-2">Memuat permintaan...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map View Section -->
+                <div id="map-view" class="content-section d-none">
+                    <div class="dashboard-header">
+                        <div class="container">
+                            <h2>Peta Donasi</h2>
+                            <p class="mb-0">Lihat lokasi donasi Anda di peta</p>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="dashboard-card">
+                            <div class="card-body">
+                                <div id="dashboardMap" style="height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="history" class="content-section d-none">
+                    <div class="dashboard-header">
+                        <div class="container">
+                            <h2>Riwayat Donasi</h2>
+                            <p class="mb-0">Lihat semua donasi yang telah selesai</p>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="dashboard-card">
+                            <div class="card-body" id="historyList">
+                                <div class="text-center py-4">
+                                    <div class="loading"></div>
+                                    <p class="mt-2">Memuat riwayat...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div class="modal fade" id="mapModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Lokasi di Peta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="pickupMap" style="height: 400px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="setSelectedLocation()">Pilih Lokasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/dashboard.js"></script>
+</body>
+</html>
